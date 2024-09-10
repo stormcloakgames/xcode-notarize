@@ -39681,7 +39681,6 @@ const fetchlog = async ({uuid, username, teamid, password, verbose}) => {
     const args = [
         "notarytool",
         "log",
-        "--wait",
         "--apple-id", username,
         "--team-id", teamid,
         "--password", password,
