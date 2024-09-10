@@ -70,7 +70,9 @@ const archive = async ({productPath}) => {
 };
 
 
-const fetchlog = async ({archivePath, username, teamid, password, verbose}) => {
+var uuid = "<unknown>";
+
+const fetchlog = async ({uuid, username, teamid, password, verbose}) => {
     //
     // Run notarytool to notarize this application. This only submits the
     // application to the queue on Apple's server side. It does not
@@ -85,7 +87,7 @@ const fetchlog = async ({archivePath, username, teamid, password, verbose}) => {
         "--apple-id", username,
         "--team-id", teamid,
         "--password", password,
-        archivePath
+        uuid
     ];
 
     if (verbose === true) {
@@ -149,6 +151,17 @@ const submit = async ({archivePath, username, teamid, password, verbose}) => {
 
     const {exitCode, stdout, stderr} = await xcrun;
 
+    // try parse the UUID from the output
+    // I don't know if this is going to work or not
+    const lines = stdout.split("\n");
+    for (i = 0; i < lines.length; i++) {
+        var d = lines[i].trim();
+        if (d.startsWith("id: ")) {
+            uuid = d.split(": ")[1];
+            console.log("detected submission UUID: " + uuid);
+        }
+    }
+
     if (exitCode === undefined) {
         // TODO Command did not run at all
         throw Error("Unknown failure - notarytool did not run at all?");
@@ -194,7 +207,7 @@ const main = async () => {
         // "Always check the notary log, even if notarization succeeds, 
         // because it might contain warnings that you can fix prior to your next submission."
         const log = await core.group('Fetching notarization log', async () => {
-            return await fetchlog({archivePath: archivePath, ...configuration})
+            return await fetchlog({uuid: uuid, ...configuration})
         });
 
         if (success == false) {
