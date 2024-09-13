@@ -39636,7 +39636,6 @@ const parseConfiguration = () => {
         teamid: core.getInput("appstore-connect-teamid", {required: true}),
         password: core.getInput("appstore-connect-password", {required: true}),
         verbose: core.getInput("verbose") === "true",
-        archive: core.getInput("archive") === "true",
     };
 
     if (!fs.existsSync(configuration.productPath)) {
@@ -39786,12 +39785,6 @@ const main = async () => {
         const configuration = parseConfiguration();
 
         const archivePath = await core.group('Archiving Application', async () => {
-            if (!configuration.archive) {
-                const archivePath = configuration.productPath;
-                core.info(`Using ${archivePath} directly`);
-                return archivePath;
-            }
-
             const archivePath = await archive(configuration)
             if (archivePath !== null) {
                 core.info(`Created application archive at ${archivePath}`);

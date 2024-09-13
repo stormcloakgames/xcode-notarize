@@ -14,9 +14,6 @@ This action notarizes macOS applications or plug-ins. It does this by submitting
     appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
     appstore-connect-teamid: ${{ secrets.NOTARIZATION_TEAMID }}
     appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
-    # optional arguments:
-    # verbose: true
-    # archive: true -- if set, the .app will be compressed into a .zip to send instead
 ```
 
 Note that notarization is not the final step. After Apple has notarized your application, you also want to _staple_ a notarization ticket to your product. This can be done with the [Xcode Staple](https://github.com/marketplace/actions/xcode-staple) action.
